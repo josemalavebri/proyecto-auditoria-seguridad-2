@@ -1,0 +1,57 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title text-center mb-4">Buscar Encuesta</h5>
+                    <form id="formBusqueda" onsubmit="return false;">
+                        <div class="mb-3 position-relative">
+                            <label for="lugares" class="form-label">Lugares</label>
+                            <input type="text" class="form-control" id="lugares" name="lugares" placeholder="Ingresa lugares" autocomplete="off">
+                            <div id="sugerencias" class="list-group position-absolute w-100 z-3"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 mb-3 position-relative">
+                                <label for="facultad" class="form-label">Facultad</label>
+                                <input type="text" class="form-control" id="facultad" name="facultad" placeholder="Ingresa facultad" autocomplete="off">
+                                <div id="sugerencias-facultad" class="list-group position-absolute w-100 z-3"></div>
+                            </div>
+                            <div class="col-6 mb-3 position-relative">
+                                <label for="departamento" class="form-label">Departamento</label>
+                                <input type="text" class="form-control" id="departamento" name="departamento" placeholder="Ingresa departamento" autocomplete="off">
+                                <div id="sugerencias-departamento" class="list-group position-absolute w-100 z-3"></div>
+                            </div>
+                        </div>
+
+                        <div class="text-center my-4">
+                            <button type="button" class="btn btn-primary btn-lg" onclick="buscarAuditorias()">
+                                Mostrar Auditoría
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <h3>Encuestas Filtradas</h3>
+            <div id="contenedor-auditorias" class="p-4 border rounded shadow-sm bg-light"></div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-3">
+    <h3>Detalles de la encuesta</h3>
+    <div id="contenedor-detalle" class="container mt-4 p-4 border rounded shadow-sm bg-light">
+        <!-- Aquí se mostrará el detalle de la encuesta -->
+    </div>
+</div>
+
+

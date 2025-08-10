@@ -1,0 +1,63 @@
+﻿@page
+@model front_auditoria.Pages.CreadorEncuestasModel
+@{
+}<div class= "container mt-2" >
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title text-center mb-4">Buscar Encuesta</h5>
+                    <form id="formBusqueda" onsubmit="return false;">
+                        <div class="mb-3 position-relative">
+                            <label for="lugares" class="form-label">Lugares</label>
+                            <input type="text" class="form-control" id="lugares" name="lugares" placeholder="Ingresa lugares" autocomplete="off">
+                            <div id="sugerencias" class="list-group position-absolute w-100 z-3"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class=" mb-3 position-relative">
+                                <label for="facultad" class="form-label">Facultad</label>
+                                <input type="text" class="form-control" id="facultad" name="facultad" placeholder="Ingresa facultad" autocomplete="off">
+                                <div id="sugerencias-facultad" class="list-group position-absolute w-100 z-3"></div>
+                            </div>
+                            <div class=" mb-3 position-relative">
+                                <label for="departamento" class="form-label">Departamento</label>
+                                <input type="text" class="form-control" id="departamento" name="departamento" placeholder="Ingresa departamento" autocomplete="off">
+                                <div id="sugerencias-departamento" class="list-group position-absolute w-100 z-3"></div>
+                            </div>
+                        </div>
+
+                        <div class="text-center my-4">
+                            <button type="button" class="btn btn-primary " onclick="buscarAuditorias()">
+                                Mostrar Auditoría
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <h3>Ultima Encuesta Realizada</h3>
+
+            <table id="tabla-auditorias" class="table table-bordered" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>ID Encuesta</th>          <!-- Nueva columna -->
+                        <th>Fecha Ejecución</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-auditorias">
+                    <!-- Aquí se agregan filas dinámicamente -->
+                </tbody>
+            </table>
+
+            <div id="mensaje-auditorias"></div>
+            <button id="btn-crear-auditoria" class="btn btn-success mt-3 d-none">Crear Auditoría</button>
+        </div>
+    </div>
+</div>
+
+
+
+
