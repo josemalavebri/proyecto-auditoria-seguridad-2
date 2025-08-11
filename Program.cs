@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<EncuestaDBContext>(options =>
-    options.UseSqlServer("Server=ROBERT;Database=EncuestaDB10;Trusted_Connection=True;TrustServerCertificate=True;"));
+    options.UseSqlServer("Server=DESKTOP-12H49JM;Database=EncuestaDB10;Trusted_Connection=True;TrustServerCertificate=True;"));
 
 
 builder.Services.AddScoped<IRepositoryGet, RepositoryEncuestaEjecucion>();
@@ -18,6 +18,7 @@ builder.Services.AddScoped<IRepositoryFacultades, RepositoryFacultades>();
 builder.Services.AddScoped<IRepositoryDirecciones, RepositoryDirecciones>();
 builder.Services.AddScoped<IRepositoryAuditoriaDetalles, RepositoryAuditoriaDetalles>();
 builder.Services.AddScoped<IRepositoryResumenAuditoriaEncuesta, RepositoryResumenAuditoriaEncuesta>();
+builder.Services.AddScoped<IRepositoryResumenAuditoriaProgramada, RepositoryResumenAuditoriaProgramada>();
 
 var app = builder.Build();
 

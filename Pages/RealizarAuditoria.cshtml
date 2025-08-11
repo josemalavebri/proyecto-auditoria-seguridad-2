@@ -2,3 +2,25 @@
 @model proyecto_auditoria_seguridad.Pages.RealizarAuditoriaModel
 @{
 }
+<div class="container py-3">
+    <div class="row g-3">
+        <h4 class="card-title text-center">Auditoria</h4>
+
+        <div class="col-12">
+            <div class="card shadow border-1">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Auditorías Programadas</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <div id="contenedor-auditorias-detalle">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/js/realizarAuditoria.js" asp-append-version="true"></script>
+}

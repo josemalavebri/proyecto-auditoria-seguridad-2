@@ -83,6 +83,18 @@ namespace proyecto_auditoria_seguridad.Pages
             return new JsonResult(resumen);
         }
 
+        public async Task<IActionResult> OnGetResumenProgramadasAsync()
+        {
+            // Obtener la instancia del repositorio
+            var repo = _serviceProvider.GetRequiredService<IRepositoryResumenAuditoriaProgramada>();
+
+            // Llamar al método que obtiene todos los registros sin filtros
+            var resumen = await repo.ObtenerResumenAuditoriasProgramadasAsync();
+
+            // Devolver los datos como JSON
+            return new JsonResult(resumen);
+        }
+
 
     }
 }

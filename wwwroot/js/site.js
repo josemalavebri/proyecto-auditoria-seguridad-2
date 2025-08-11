@@ -300,6 +300,79 @@ form.addEventListener('submit', e => {
 
 //---------------------REALIZAR AUDITORIA--------------------
 
+window.addEventListener('DOMContentLoaded', async () => {
+    console.log('DOM listo, iniciando carga de auditorías');
 
+    const contenedor = document.getElementById('contenedor-auditorias-detalle');
+    if (!contenedor) {
+        console.error('No se encontró el div contenedor-auditorias-detalle en el DOM.');
+        return;
+    }
+    contenedor.innerHTML = 'Cargando datos...';
+
+    try {
+        // URL corregida para la página RealizarAuditoria
+        const url = `/RealizarAuditoria?handler=ResumenProgramadas`;
+        console.log(`Consultando URL: ${url}`);
+
+        const response = await fetch(url);
+        console.log('Respuesta de la API:', response); // <-- **NUEVO**
+        if (!response.ok) {
+            console.error('Error en la respuesta de la red:', response.status); // <-- **NUEVO**
+            throw new Error(`Error en la consulta: ${response.status}`);
+        }
+
+        const datos = await response.json();
+        console.log('Datos recibidos (JSON):', datos); // <-- **NUEVO**
+
+        if (!Array.isArray(datos) || datos.length === 0) {
+            console.warn('Datos recibidos no son un array o están vacíos.'); // <-- **NUEVO**
+            contenedor.innerHTML = `<div class="alert alert-warning" role="alert">No se encontraron registros.</div>`;
+            return;
+        }
+
+        console.log(`Se encontraron ${datos.length} registros. Procediendo a renderizar la tabla.`); // <-- **NUEVO**
+
+        const table = document.createElement('table');
+        table.classList.add('table', 'table-striped', 'table-bordered', 'table-hover');
+
+        table.innerHTML = ` 
+            <thead class="table-dark"> 
+                <tr> 
+                    <th>Dirección</th> 
+                    <th>Departamento</th> 
+                    <th>Facultad</th> 
+                    <th>ID Encuesta</th> 
+                    <th>Fecha Programada</th> 
+                    <th>Descripción</th> 
+                </tr> 
+            </thead> 
+        `;
+
+        const tbody = document.createElement('tbody');
+
+        datos.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = ` 
+                <td>${item.direccion || ''}</td> 
+                <td>${item.departamento || ''}</td> 
+                <td>${item.facultad || ''}</td> 
+                <td>${item.idEncuesta || ''}</td> 
+                <td>${new Date(item.fechaProgramada).toLocaleString()}</td> 
+                <td>${item.descripcion || ''}</td> 
+            `;
+            tbody.appendChild(tr);
+        });
+
+        table.appendChild(tbody);
+        contenedor.innerHTML = '';
+        contenedor.appendChild(table);
+        console.log('Tabla renderizada con éxito.'); // <-- **NUEVO**
+
+    } catch (error) {
+        console.error('Error general capturado:', error); // <-- **NUEVO**
+        contenedor.innerHTML = `<div class="alert alert-danger">Error al cargar auditorías.</div>`;
+    }
+});
 
 //---------------------FIN REALIZAR AUDITORIA--------------------
