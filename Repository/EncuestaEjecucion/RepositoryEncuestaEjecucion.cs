@@ -19,7 +19,7 @@ namespace front_auditoria.Respository.Encuesta
     string nombreDireccion,
     string nombreFacultad = null)
         {
-            var query = from ee in Context.EjecucionesEncuesta
+            var query = from ee in Context.Auditorias
                         join e in Context.Encuestas on ee.idEncuesta equals e.idEncuesta
                         join ui in Context.UbicacionesInstitucionales on e.idUbicacionInstitucional equals ui.idUbicacionInstitucional
                         join dep in Context.Departamentos on ui.idDepartamento equals dep.idDepartamento
@@ -29,11 +29,11 @@ namespace front_auditoria.Respository.Encuesta
                         where (nombreDepartamento == null || dep.nombre == nombreDepartamento)
                            && (nombreDireccion == null || d.nombre == nombreDireccion)
                            && (string.IsNullOrEmpty(nombreFacultad) || (f != null && f.nombre == nombreFacultad))
-                        orderby ee.fechaEjecucion descending
+                        orderby ee.fechaAuditoria descending
                         select new EncuestaEjecucion
                         {
                             IdEncuesta = e.idEncuesta,
-                            FechaEjecucion = ee.fechaEjecucion,
+                            FechaEjecucion = ee.fechaAuditoria,
                             Descripcion = e.descripcion
                         };
 

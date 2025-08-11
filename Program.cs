@@ -2,19 +2,22 @@ using front_auditoria.Respository.Encuesta;
 using front_auditoria.Respository.Lugares;
 using Microsoft.EntityFrameworkCore;
 using proyecto_auditoria_seguridad.Models;
+using proyecto_auditoria_seguridad.Repository.EncuestaEjecucion;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<EncuestaDBContext>(options =>
-    options.UseSqlServer("Server=DESKTOP-0PURE6E;Database=EncuestaDB8;Trusted_Connection=True;TrustServerCertificate=True;"));
+    options.UseSqlServer("Server=ROBERT;Database=EncuestaDB10;Trusted_Connection=True;TrustServerCertificate=True;"));
 
 
 builder.Services.AddScoped<IRepositoryGet, RepositoryEncuestaEjecucion>();
 builder.Services.AddScoped<IRepositoryDepartamentos, RepositoryDepartamentos>();
 builder.Services.AddScoped<IRepositoryFacultades, RepositoryFacultades>();
 builder.Services.AddScoped<IRepositoryDirecciones, RepositoryDirecciones>();
+builder.Services.AddScoped<IRepositoryAuditoriaDetalles, RepositoryAuditoriaDetalles>();
+builder.Services.AddScoped<IRepositoryResumenAuditoriaEncuesta, RepositoryResumenAuditoriaEncuesta>();
 
 var app = builder.Build();
 
@@ -33,3 +36,6 @@ app.MapRazorPages()
    .WithStaticAssets();
 
 app.Run();
+
+
+

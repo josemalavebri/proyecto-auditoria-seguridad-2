@@ -1,139 +1,106 @@
-﻿// Función para buscar auditorías según filtros y cargar resultados
+﻿
+
+
+//--------------------------------------------------------INDEX--------------------------
 async function buscarAuditorias() {
-    if (!validarElementos()) return;
+    // Obtener valores de inputs y limpiar espacios
+    const nombreDireccion = document.getElementById('lugares').value.trim();
+    const nombreFacultad = document.getElementById('facultad').value.trim();
+    const nombreDepartamento = document.getElementById('departamento').value.trim();
 
-    const filtros = obtenerFiltros();
-    if (filtrosVacios(filtros)) {
-        limpiarResultados();
+    // Validar campos obligatorios: departamento y direccion (facultad opcional)
+    if (!nombreDepartamento || !nombreDireccion) {
+        alert('Debe ingresar Departamento y Dirección para buscar.');
         return;
     }
 
-    const url = construirUrl(filtros);
+    // Construir URL con query params
+    const params = new URLSearchParams();
+    params.append('nombreDepartamento', nombreDepartamento);
+    params.append('nombreDireccion', nombreDireccion);
+    if (nombreFacultad) params.append('nombreFacultad', nombreFacultad);
 
-    const datos = await obtenerDatos(url);
-    if (!datos) {
-        mostrarError('Error al cargar datos.');
-        ocultarTabla();
-        ocultarBotonCrear();
-        return;
-    }
+    const url = `/Index?handler=Resumen&${params.toString()}`;
 
-    if (datos.mensaje) {
-        mostrarMensaje(datos.mensaje);
-        limpiarTabla();
-        ocultarTabla();
-        ocultarBotonCrear();
-        return;
-    }
-
-    renderizarResultados(datos);
-}
-
-// Validación de elementos del DOM
-function validarElementos() {
-    return ['lugares', 'facultad', 'departamento', 'tabla-auditorias', 'tbody-auditorias', 'mensaje-auditorias', 'btn-crear-auditoria']
-        .every(id => document.getElementById(id));
-}
-
-// Obtener valores de filtros del formulario
-function obtenerFiltros() {
-    return {
-        nombreDireccion: document.getElementById('lugares').value.trim(),
-        nombreFacultad: document.getElementById('facultad').value.trim(),
-        nombreDepartamento: document.getElementById('departamento').value.trim(),
-    };
-}
-
-// Verificar si todos los filtros están vacíos
-function filtrosVacios(filtros) {
-    return Object.values(filtros).every(valor => !valor);
-}
-
-// Limpiar resultados y ocultar tabla, mensajes y botón
-function limpiarResultados() {
-    limpiarTabla();
-    ocultarTabla();
-    mostrarMensaje('');
-    ocultarBotonCrear();
-}
-
-function limpiarTabla() {
-    document.getElementById('tbody-auditorias').innerHTML = '';
-}
-
-function ocultarTabla() {
-    document.getElementById('tabla-auditorias').style.display = 'none';
-}
-
-function mostrarMensaje(texto) {
-    document.getElementById('mensaje-auditorias').textContent = texto;
-}
-
-function ocultarBotonCrear() {
-    document.getElementById('btn-crear-auditoria').classList.add('d-none');
-}
-
-function mostrarBotonCrear() {
-    document.getElementById('btn-crear-auditoria').classList.remove('d-none');
-}
-
-// Construir URL con parámetros para la petición
-function construirUrl(filtros) {
-    Object.keys(filtros).forEach(k => !filtros[k] && delete filtros[k]);
-    const query = new URLSearchParams(filtros).toString();
-    return `/Index?handler=UltimaEjecucionFiltrada${query ? '&' + query : ''}`;
-}
-
-// Petición fetch y obtención de datos JSON
-async function obtenerDatos(url) {
     try {
-        const res = await fetch(url);
-        if (!res.ok) return null;
-        return await res.json();
-    } catch {
-        return null;
-    }
-}
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Error en la consulta');
+        const json = await response.json();
+            console.log(json);
 
-// Renderizar tabla con los datos recibidos y mostrar botón si hay datos
-function renderizarResultados(datos) {
-    limpiarTabla();
-    mostrarMensaje('');
-
-    if (!datos || !datos.fechaEjecucion) {
-        mostrarMensaje('No se encontraron resultados.');
-        ocultarTabla();
-        ocultarBotonCrear();
-        return;
+            renderizarResultados(json);
+        } catch (error) {
+            console.error(error);
+            document.getElementById('contenedor-auditorias').innerHTML = `<div class="alert alert-danger">Error al cargar auditorías.</div>`;
+        }
     }
 
-    const tbody = document.getElementById('tbody-auditorias');
-    const fila = document.createElement('tr');
-    fila.dataset.idEncuesta = datos.idEncuesta;
+    function renderizarResultados(datos) {
+        const contenedor = document.getElementById('contenedor-auditorias');
+        contenedor.innerHTML = ''; 
 
-    // Celda ID Encuesta (primera columna)
-    const idCelda = document.createElement('td');
-    idCelda.textContent = datos.idEncuesta || 'N/A';
-    fila.appendChild(idCelda);
+        let lista = []; 
 
-    // Celda Fecha Ejecución (segunda columna)
-    const fechaCelda = document.createElement('td');
-    fechaCelda.textContent = new Date(datos.fechaEjecucion).toLocaleString();
-    fila.appendChild(fechaCelda);
+        if (Array.isArray(datos)) {
+            lista = datos; 
+            console.log("Datos es un array. Longitud de lista:", lista.length); // DEBUG
+        } else if (datos && typeof datos === 'object') {
+            lista = [datos]; 
+            console.log("Datos es un objeto. Longitud de lista:", lista.length); // DEBUG
+        } else {
+            console.log("Datos no es ni array ni objeto válido."); // DEBUG
+        }
 
-    // Celda Descripción (tercera columna)
-    const descCelda = document.createElement('td');
-    descCelda.textContent = datos.descripcion || 'Sin descripción';
-    fila.appendChild(descCelda);
+        if (lista.length === 0) {
+            contenedor.innerHTML = `<p>No se encontraron encuestas con esos filtros.</p>`;
+            console.log("Lista está vacía. Mostrando mensaje de no resultados."); // DEBUG
+            return;
+        }
 
-    tbody.appendChild(fila);
+        console.log("Lista tiene elementos. Procediendo a renderizar la tabla."); // DEBUG
 
-    const tabla = document.getElementById('tabla-auditorias');
-    if (tabla) tabla.style.display = '';
 
-    mostrarBotonCrear();
-}
+        // Crear tabla simple
+        const table = document.createElement('table');
+        table.classList.add('table', 'table-striped', 'table-bordered');
 
+        // Encabezado
+        table.innerHTML = `
+        <thead class="table-dark">
+          <tr>
+            <th>Id Encuesta</th>
+            <th>Fecha Auditoría</th>
+            <th>Persona Auditada</th>
+            <th>Auditor</th>
+            <th>Descripción Encuesta</th>
+            <th>Cantidad Preguntas</th>
+            <th>Cantidad Ítems</th>
+          </tr>
+        </thead>
+      `;
+
+        // Cuerpo
+        const tbody = document.createElement('tbody');
+
+        lista.forEach(dato => {
+            const tr = document.createElement('tr');
+
+            tr.innerHTML = `
+          <td>${dato.idEncuesta}</td>
+          <td>${new Date(dato.fechaAuditoria).toLocaleString()}</td>
+          <td>${dato.personaAuditada || ''}</td>
+          <td>${dato.auditor || ''}</td>
+          <td>${dato.descripcionEncuesta || ''}</td>
+          <td>${dato.cantidadPreguntas}</td>
+          <td>${dato.cantidadItems}</td>
+        `;
+
+            tbody.appendChild(tr);
+        });
+
+        table.appendChild(tbody);
+        contenedor.appendChild(table);
+    }
 
 //---------------------------------------
 
@@ -192,7 +159,7 @@ function autocompletar(inputId, sugerenciasId, handler) {
 // Función para mostrar detalle de encuesta, renderizado simple sin tabla
 async function detallarEncuesta(id) {
     try {
-        const res = await fetch(`/Index?handler=DetalleEncuesta&id=${id}`);
+        const res = await fetch(`/CreadorEncuesta?handler=DetalleEncuesta&id=${id}`);
         const detalle = await res.json();
         const contenedor = document.getElementById('contenedor-detalle');
 
@@ -216,4 +183,123 @@ async function detallarEncuesta(id) {
     }
 }
 
+//--------------------AGREGAR NUEVA ENCUESTA--------------------
+function alternarSeccion(crearNueva) {
+    const divNueva = document.getElementById('nueva-seccion');
+    const divExistente = document.getElementById('seccion-existente');
+    if (crearNueva) {
+        divNueva.classList.remove('d-none');
+        divExistente.classList.add('d-none');
+    } else {
+        divNueva.classList.add('d-none');
+        divExistente.classList.remove('d-none');
+    }
+}
 
+// Filtrar ítems por grupo sin desmarcar checkboxes
+document.querySelectorAll('.item-titulo').forEach(titulo => {
+    titulo.addEventListener('click', () => {
+        const grupoSeleccionado = titulo.getAttribute('data-group');
+        document.querySelectorAll('.item-group').forEach(grupo => {
+            if (grupo.getAttribute('data-group') === grupoSeleccionado) {
+                grupo.classList.remove('d-none');
+            } else {
+                grupo.classList.add('d-none');
+                // No desmarcar checkboxes para preservar selección
+                // grupo.querySelectorAll('input[type=checkbox]').forEach(chk => chk.checked = false);
+            }
+        });
+        actualizarItemsAgregados();
+    });
+});
+
+const itemsAgregadosUL = document.getElementById('items-agregados');
+const form = document.getElementById('form-pregunta-completa');
+const accordion = document.getElementById('accordionPreguntas');
+let preguntaCount = 0;
+
+function actualizarItemsAgregados() {
+    // Se toman todos los checkboxes marcados en todo el formulario, no solo visibles
+    const checkedItems = Array.from(document.querySelectorAll('input[name="items"]:checked'));
+    itemsAgregadosUL.innerHTML = '';
+    if (checkedItems.length === 0) {
+        const li = document.createElement('li');
+        li.className = 'list-group-item text-muted';
+        li.textContent = 'No hay ítems seleccionados.';
+        itemsAgregadosUL.appendChild(li);
+        return;
+    }
+    checkedItems.forEach(chk => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item';
+        li.textContent = chk.nextElementSibling.textContent;
+        itemsAgregadosUL.appendChild(li);
+    });
+}
+
+// Escuchar cambios en todos los checkboxes, sin importar si están visibles o no
+document.querySelectorAll('input[name="items"]').forEach(chk => {
+    chk.addEventListener('change', actualizarItemsAgregados);
+});
+
+actualizarItemsAgregados();
+
+form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const preguntaText = document.getElementById('pregunta').value.trim();
+    if (!preguntaText) return alert('Debe ingresar la pregunta.');
+
+    let seccion;
+    if (document.getElementById('toggleNuevaSeccion').checked) {
+        seccion = document.getElementById('nombreSeccion').value.trim();
+        if (!seccion) return alert('Debe ingresar el nombre de la nueva sección.');
+    } else {
+        const sel = document.getElementById('seccion');
+        seccion = sel.options[sel.selectedIndex].text;
+        if (!sel.value) return alert('Debe seleccionar una sección existente.');
+    }
+
+    const checkedItems = Array.from(document.querySelectorAll('input[name="items"]:checked'))
+        .map(chk => chk.value);
+    if (checkedItems.length === 0) return alert('Debe seleccionar al menos un ítem.');
+
+    preguntaCount++;
+    const collapseId = 'collapsePregunta' + preguntaCount;
+    const headingId = 'headingPregunta' + preguntaCount;
+
+    const itemsHtml = checkedItems.map(item => `<li>${item}</li>`).join('');
+
+    const accordionItem = document.createElement('div');
+    accordionItem.className = 'accordion-item';
+    accordionItem.innerHTML = `
+    <h2 class="accordion-header" id="${headingId}">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}" aria-expanded="false" aria-controls="${collapseId}">
+        ${preguntaText} <small class="text-muted ms-3">[${seccion}]</small>
+      </button>
+    </h2>
+    <div id="${collapseId}" class="accordion-collapse collapse" aria-labelledby="${headingId}">
+      <div class="accordion-body">
+        <strong>Ítems asociados:</strong>
+        <ul>${itemsHtml}</ul>
+      </div>
+    </div>
+  `;
+
+    accordion.appendChild(accordionItem);
+
+    form.reset();
+    alternarSeccion(false);
+    // Mostrar todas las categorías al limpiar formulario
+    document.querySelectorAll('.item-group').forEach(g => g.classList.remove('d-none'));
+    actualizarItemsAgregados();
+});
+
+//--------------------FIN AGREGAR NUEVA ENCUESTA--------------------
+
+
+//---------------------REALIZAR AUDITORIA--------------------
+
+
+
+//---------------------FIN REALIZAR AUDITORIA--------------------

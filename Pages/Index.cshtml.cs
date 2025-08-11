@@ -2,6 +2,7 @@ using front_auditoria.Respository.Encuesta;
 using front_auditoria.Respository.Lugares;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using proyecto_auditoria_seguridad.Repository.EncuestaEjecucion;
 
 namespace proyecto_auditoria_seguridad.Pages
 {
@@ -67,6 +68,21 @@ namespace proyecto_auditoria_seguridad.Pages
 
             return new JsonResult(resultado);
         }
+
+        public async Task<IActionResult> OnGetResumenAsync(
+      string nombreDepartamento,
+      string nombreDireccion,
+      string nombreFacultad = null)
+        {
+            var repo = _serviceProvider.GetRequiredService<IRepositoryResumenAuditoriaEncuesta>();
+
+            // Pasar los parámetros al método async
+            var resumen = await repo.ObtenerResumenAuditoriasAsync(
+                nombreDepartamento, nombreDireccion, nombreFacultad);
+
+            return new JsonResult(resumen);
+        }
+
 
     }
 }

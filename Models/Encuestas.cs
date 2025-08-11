@@ -15,13 +15,13 @@ public partial class Encuestas
 
     public string? descripcion { get; set; }
 
-    public virtual ICollection<EjecucionesEncuesta> EjecucionesEncuesta { get; set; } = new List<EjecucionesEncuesta>();
+    public virtual Auditorias? Auditorias { get; set; }
+
+    public virtual ICollection<AuditoriasProgramadas> AuditoriasProgramadas { get; set; } = new List<AuditoriasProgramadas>();
 
     public virtual ICollection<Encuestas> InverseidEncuestaAnteriorNavigation { get; set; } = new List<Encuestas>();
 
-    public virtual ICollection<ItemsEncuesta> ItemsEncuesta { get; set; } = new List<ItemsEncuesta>();
-
-    public virtual ICollection<PreguntasEncuesta> PreguntasEncuesta { get; set; } = new List<PreguntasEncuesta>();
+    public virtual ICollection<Preguntas> Preguntas { get; set; } = new List<Preguntas>();
 
     public virtual Encuestas? idEncuestaAnteriorNavigation { get; set; }
 

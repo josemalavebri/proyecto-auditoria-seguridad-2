@@ -1,0 +1,80 @@
+﻿@page
+@model proyecto_auditoria_seguridad.Pages.EncuestaModel
+@{
+}
+
+
+<h4 class="fw-bold mb-3">Preguntas de Referencia</h4>
+<div class="accordion mb-4" id="accordionReferencia">
+
+    <!-- Pregunta 1 -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="refHeading1">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#refCollapse1" aria-expanded="true" aria-controls="refCollapse1">
+                ¿Qué es seguridad informática?
+            </button>
+        </h2>
+        <div id="refCollapse1" class="accordion-collapse collapse show" aria-labelledby="refHeading1" data-bs-parent="#accordionReferencia">
+            <div class="accordion-body p-2">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex align-items-center justify-content-between">
+                        <span>Cifrado AES</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="btn btn-success btn-sm btn-option">Sí</button>
+                            <button type="button" class="btn btn-danger btn-sm btn-option">No</button>
+                            <input type="number" class="form-control form-control-sm input-porcentaje" placeholder="%" min="0" max="100">
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center justify-content-between">
+                        <span>Firewall Lógico</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="btn btn-success btn-sm btn-option">Sí</button>
+                            <button type="button" class="btn btn-danger btn-sm btn-option">No</button>
+                            <input type="number" class="form-control form-control-sm input-porcentaje" placeholder="%" min="0" max="100">
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center justify-content-between">
+                        <span>Hardening de sistemas</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="btn btn-success btn-sm btn-option">Sí</button>
+                            <button type="button" class="btn btn-danger btn-sm btn-option">No</button>
+                            <input type="number" class="form-control form-control-sm input-porcentaje" placeholder="%" min="0" max="100">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pregunta 2 -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="refHeading2">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#refCollapse2" aria-expanded="false" aria-controls="refCollapse2">
+                ¿Cómo proteger un servidor?
+            </button>
+        </h2>
+        <div id="refCollapse2" class="accordion-collapse collapse" aria-labelledby="refHeading2" data-bs-parent="#accordionReferencia">
+            <div class="accordion-body p-2">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex align-items-center justify-content-between">
+                        <span>Actualizaciones automáticas</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="btn btn-success btn-sm btn-option">Sí</button>
+                            <button type="button" class="btn btn-danger btn-sm btn-option">No</button>
+                            <input type="number" class="form-control form-control-sm input-porcentaje" placeholder="%" min="0" max="100">
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center justify-content-between">
+                        <span>Configuración de firewall</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="btn btn-success btn-sm btn-option">Sí</button>
+                            <button type="button" class="btn btn-danger btn-sm btn-option">No</button>
+                            <input type="number" class="form-control form-control-sm input-porcentaje" placeholder="%" min="0" max="100">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>

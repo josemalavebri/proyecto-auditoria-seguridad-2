@@ -7,17 +7,19 @@ public partial class RespuestasItems
 {
     public int idRespuestaItem { get; set; }
 
-    public int idPreguntasEncuestaItems { get; set; }
+    public int idPreguntaItem { get; set; }
 
-    public int idEjecucion { get; set; }
+    public int idAuditoria { get; set; }
 
-    public bool respuesta { get; set; }
+    public decimal? porcentajeCumplimiento { get; set; }
 
-    public DateTime fechaRespuesta { get; set; }
+    public bool? respuestaBinaria { get; set; }
 
     public string? comentario { get; set; }
 
-    public virtual EjecucionesEncuesta idEjecucionNavigation { get; set; } = null!;
+    public DateTime fechaRespuesta { get; set; }
 
-    public virtual PreguntasEncuestaItems idPreguntasEncuestaItemsNavigation { get; set; } = null!;
+    public virtual Auditorias idAuditoriaNavigation { get; set; } = null!;
+
+    public virtual PreguntasItems idPreguntaItemNavigation { get; set; } = null!;
 }

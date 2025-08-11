@@ -1,63 +1,298 @@
 ﻿@page
 @model front_auditoria.Pages.CreadorEncuestasModel
 @{
-}<div class= "container mt-2" >
-    <div class="row">
-        <div class="col-md-3">
-            <div class="card shadow-lg">
-                <div class="card-body">
-                    <h5 class="card-title text-center mb-4">Buscar Encuesta</h5>
-                    <form id="formBusqueda" onsubmit="return false;">
-                        <div class="mb-3 position-relative">
-                            <label for="lugares" class="form-label">Lugares</label>
-                            <input type="text" class="form-control" id="lugares" name="lugares" placeholder="Ingresa lugares" autocomplete="off">
-                            <div id="sugerencias" class="list-group position-absolute w-100 z-3"></div>
-                        </div>
+}
+<div class="container py-3">
+    <div class="row g-3">
+        <h4 class="card-title text-center">Buscar Ultima Auditoria</h4>
 
-                        <div class="row">
-                            <div class=" mb-3 position-relative">
-                                <label for="facultad" class="form-label">Facultad</label>
+        <!-- Columna izquierda: Búsqueda -->
+        <div class="">
+            <div class="card shadow border-1">
+                <div class="card-body">
+                    <form id="formBusqueda" onsubmit="return false;">
+                        <div class="row g-2">
+                            <div class="col-md-4 mb-2 position-relative">
+                                <label for="lugares" class="form-label fw-semibold">Lugares</label>
+                                <input type="text" class="form-control" id="lugares" name="lugares" placeholder="Ingresa lugares" autocomplete="off">
+                                <div id="sugerencias" class="list-group position-absolute w-100 z-3"></div>
+                            </div>
+
+                            <div class="col-md-4 mb-2 position-relative">
+                                <label for="facultad" class="form-label fw-semibold">Facultad</label>
                                 <input type="text" class="form-control" id="facultad" name="facultad" placeholder="Ingresa facultad" autocomplete="off">
                                 <div id="sugerencias-facultad" class="list-group position-absolute w-100 z-3"></div>
                             </div>
-                            <div class=" mb-3 position-relative">
-                                <label for="departamento" class="form-label">Departamento</label>
+
+                            <div class="col-md-4 mb-2 position-relative">
+                                <label for="departamento" class="form-label fw-semibold">Departamento</label>
                                 <input type="text" class="form-control" id="departamento" name="departamento" placeholder="Ingresa departamento" autocomplete="off">
                                 <div id="sugerencias-departamento" class="list-group position-absolute w-100 z-3"></div>
                             </div>
                         </div>
 
-                        <div class="text-center my-4">
-                            <button type="button" class="btn btn-primary " onclick="buscarAuditorias()">
+                        <div class="mt-2">
+                            <button type="button" class="btn btn-primary fw-semibold" onclick="buscarAuditorias()">
                                 Mostrar Auditoría
                             </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="seccionAuditoria" class="d-none">
+        <!-- Columna central: Última encuesta y formulario -->
+        <div class=" card shadow border-1 p-2">
+            <div class="mb-3 p-2">
+                <h4 class="fw-bold mb-3">Última Encuesta Realizada</h4>
+                <table id="tabla-auditorias" class="table table-bordered align-middle" style="display:none;">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID Encuesta</th>
+                            <th>Fecha Ejecución</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-auditorias"></tbody>
+                </table>
+                <div id="mensaje-auditorias"></div>
+                <button id="btn-crear-auditoria" class="btn btn-success mt-3 d-none">Crear Auditoría</button>
+            </div>
+
+            <div class="row g-3 p-2">
+                <!-- Preguntas -->
+                <div class="col-md-4 border-end pe-3" style="max-height: 90vh; overflow-y: auto;">
+                    <h6 class="fw-bold mb-3">Preguntas e items de la encuesta anterior</h6>
+                    <div class="accordion mb-4" id="accordionReferencia">
+                       
+                    </div>
+
+                    <h6 class="fw-bold mb-3">Preguntas Creadas</h6>
+                    <div class="accordion" id="accordionPreguntas" style="max-height: 40vh; overflow-y: auto;">
+                        <!-- Dinámicas -->
+                    </div>
+                </div>
+
+                <!-- Formulario -->
+                <div class="col-md-8" style="max-height: 90vh; overflow-y: auto;">
+                    <form id="form-auditoria" class="p-3 border rounded shadow-sm bg-light h-100">
+
+                        <!-- Fecha -->
+                        <div class="mb-4">
+                            <label class="fw-bold mb-2">Fecha de la siguiente encuesta</label>
+                            <input type="date" id="fechaEncuesta" name="fechaEncuesta" class="form-control">
+                        </div>
+
+                        <!-- Pregunta -->
+                        <div class="accordion mb-3" id="accordionOpciones">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingPregunta">
+                                    <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePregunta">
+                                        Crear nueva pregunta con sección (opcional)
+                                    </button>
+                                </h2>
+                                <div id="collapsePregunta" class="accordion-collapse collapse" aria-labelledby="headingPregunta" data-bs-parent="#accordionOpciones">
+                                    <div class="accordion-body">
+                                        <div class="form-check form-switch mb-3">
+                                            <input class="form-check-input" type="checkbox" id="toggleNuevaSeccion" onchange="alternarSeccion(this.checked)">
+                                            <label class="form-check-label" for="toggleNuevaSeccion">Crear nueva sección</label>
+                                        </div>
+
+                                        <div id="seccion-existente" class="mb-3">
+                                            <label for="seccion" class="form-label">Sección existente</label>
+                                            <select id="seccion" name="seccion" class="form-select">
+                                                <option value="">Seleccione una sección</option>
+                                                <option value="1">Seguridad Informática</option>
+                                                <option value="2">Redes y Comunicaciones</option>
+                                            </select>
+                                        </div>
+
+                                        <div id="nueva-seccion" class="d-none">
+                                            <div class="mb-3">
+                                                <label for="nombreSeccion" class="form-label">Nombre de la nueva sección</label>
+                                                <input type="text" id="nombreSeccion" name="nombreSeccion" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="descripcionSeccion" class="form-label">Descripción</label>
+                                                <textarea id="descripcionSeccion" name="descripcionSeccion" class="form-control" rows="2"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="pregunta" class="form-label">Texto de la Pregunta</label>
+                                            <input type="text" id="pregunta" name="pregunta" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ítems -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingItems">
+                                    <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseItems">
+                                        Agregar ítems 
+                                    </button>
+                                </h2>
+                                <div id="collapseItems" class="accordion-collapse collapse" aria-labelledby="headingItems" data-bs-parent="#accordionOpciones">
+                                    <div class="accordion-body">
+                                        <div class="accordion" id="accordionCategorias">
+
+                                            <!-- Criptografía -->
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingCripto">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCripto">
+                                                        Criptografía
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseCripto" class="accordion-collapse collapse" data-bs-parent="#accordionCategorias">
+                                                    <div class="accordion-body">
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input" id="item1" name="items" value="Cifrado AES">
+                                                            <label for="item1" class="form-check-label">Cifrado AES</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input" id="item2" name="items" value="Hashing SHA-256">
+                                                            <label for="item2" class="form-check-label">Hashing SHA-256</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Redes -->
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingRedes">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRedes">
+                                                        Redes
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseRedes" class="accordion-collapse collapse" data-bs-parent="#accordionCategorias">
+                                                    <div class="accordion-body">
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input" id="item3" name="items" value="Firewall Lógico">
+                                                            <label for="item3" class="form-check-label">Firewall Lógico</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input" id="item4" name="items" value="Segregación de red">
+                                                            <label for="item4" class="form-check-label">Segregación de red</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Seguridad -->
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingSeguridad">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeguridad">
+                                                        Seguridad
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseSeguridad" class="accordion-collapse collapse" data-bs-parent="#accordionCategorias">
+                                                    <div class="accordion-body">
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input" id="item5" name="items" value="Hardening de sistemas">
+                                                            <label for="item5" class="form-check-label">Hardening de sistemas</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input" id="item6" name="items" value="Análisis de vulnerabilidades">
+                                                            <label for="item6" class="form-check-label">Análisis de vulnerabilidades</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Control de Accesos -->
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingAccesos">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAccesos">
+                                                        Control de Accesos
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseAccesos" class="accordion-collapse collapse" data-bs-parent="#accordionCategorias">
+                                                    <div class="accordion-body">
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input" id="item7" name="items" value="Autenticación multifactor">
+                                                            <label for="item7" class="form-check-label">Autenticación multifactor</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input" id="item8" name="items" value="Control basado en roles (RBAC)">
+                                                            <label for="item8" class="form-check-label">Control basado en roles (RBAC)</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div> <!-- Fin sub-acordeón -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 d-grid">
+                            <button type="submit" class="btn btn-primary fw-semibold">Crear Auditoría</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        <div class="col-md-7">
-            <h3>Ultima Encuesta Realizada</h3>
-
-            <table id="tabla-auditorias" class="table table-bordered" style="display:none;">
-                <thead>
-                    <tr>
-                        <th>ID Encuesta</th>          <!-- Nueva columna -->
-                        <th>Fecha Ejecución</th>
-                        <th>Descripción</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody-auditorias">
-                    <!-- Aquí se agregan filas dinámicamente -->
-                </tbody>
-            </table>
-
-            <div id="mensaje-auditorias"></div>
-            <button id="btn-crear-auditoria" class="btn btn-success mt-3 d-none">Crear Auditoría</button>
         </div>
     </div>
 </div>
 
+<button id="btnCargarEncuesta1" class="btn btn-primary mb-3">Cargar Encuesta 1</button>
 
 
 
+<script>
+        document.getElementById('btnCargarEncuesta1').addEventListener('click', async () => {
+      const idEncuesta = 1; // fijo para test
+
+      try {
+        const response = await fetch(`?handler=PreguntasItems&idEncuesta=${idEncuesta}`);
+        const result = await response.json();
+
+        if (!result.success) {
+          alert('Error: ' + result.message);
+          return;
+        }
+
+        // Agrupar datos por pregunta
+        const agrupado = result.data.reduce((acc, curr) => {
+          if (!acc[curr.pregunta]) acc[curr.pregunta] = [];
+          acc[curr.pregunta].push(curr.item);
+          return acc;
+        }, {});
+
+        const contenedor = document.getElementById('accordionReferencia');
+        contenedor.innerHTML = ''; // limpiar antes de insertar
+
+        let index = 1;
+        for (const pregunta in agrupado) {
+          const items = agrupado[pregunta];
+
+          const accordionItem = document.createElement('div');
+          accordionItem.className = 'accordion-item';
+
+          accordionItem.innerHTML = `
+            <h2 class="accordion-header" id="refHeading${index}">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#refCollapse${index}" aria-expanded="false" aria-controls="refCollapse${index}">
+                ${pregunta}
+              </button>
+            </h2>
+            <div id="refCollapse${index}" class="accordion-collapse collapse" aria-labelledby="refHeading${index}" data-bs-parent="#accordionReferencia">
+              <div class="accordion-body p-2">
+                <ul class="mb-0">
+                  ${items.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+              </div>
+            </div>
+          `;
+
+          contenedor.appendChild(accordionItem);
+          index++;
+        }
+      } catch (error) {
+        console.error('Error cargando encuesta:', error);
+      }
+    });
+</script>

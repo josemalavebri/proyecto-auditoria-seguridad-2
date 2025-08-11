@@ -9,9 +9,9 @@ public partial class UbicacionesInstitucionales
 
     public int? idFacultad { get; set; }
 
-    public int idDireccion { get; set; }
-
     public int idDepartamento { get; set; }
+
+    public int idDireccion { get; set; }
 
     public virtual ICollection<Encuestas> Encuestas { get; set; } = new List<Encuestas>();
 
