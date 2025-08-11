@@ -19,6 +19,7 @@ builder.Services.AddScoped<IRepositoryDirecciones, RepositoryDirecciones>();
 builder.Services.AddScoped<IRepositoryAuditoriaDetalles, RepositoryAuditoriaDetalles>();
 builder.Services.AddScoped<IRepositoryResumenAuditoriaEncuesta, RepositoryResumenAuditoriaEncuesta>();
 builder.Services.AddScoped<IRepositoryResumenAuditoriaProgramada, RepositoryResumenAuditoriaProgramada>();
+builder.Services.AddScoped<IDetalleEncuestaRepository, DetalleEncuestaRepository>();
 
 var app = builder.Build();
 

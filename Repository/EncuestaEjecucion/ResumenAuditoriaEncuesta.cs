@@ -6,7 +6,6 @@ using static proyecto_auditoria_seguridad.Repository.EncuestaEjecucion.Repositor
 
 namespace proyecto_auditoria_seguridad.Repository.EncuestaEjecucion
 {
-
     interface IRepositoryResumenAuditoriaEncuesta
     {
         Task<List<ResumenAuditoriaEncuestaDTO>> ObtenerResumenAuditoriasAsync(string nombreDepartamento, string nombreDireccion, string nombreFacultad = null);
@@ -21,11 +20,10 @@ namespace proyecto_auditoria_seguridad.Repository.EncuestaEjecucion
             _context = context;
         }
 
-
         public async Task<List<ResumenAuditoriaEncuestaDTO>> ObtenerResumenAuditoriasAsync( // Cambiado a Task<List<...>>
-    string nombreDepartamento,
-    string nombreDireccion,
-    string nombreFacultad = null)
+            string nombreDepartamento,
+            string nombreDireccion,
+            string nombreFacultad = null)
         {
             var query = from a in _context.Auditorias
                         join pa in _context.Personas on a.idPersonaAuditada equals pa.idPersona
@@ -68,10 +66,8 @@ namespace proyecto_auditoria_seguridad.Repository.EncuestaEjecucion
                         };
 
             var lista = await query.OrderByDescending(r => r.fechaAuditoria).ToListAsync();
-
-            return lista; // Devuelve la lista de DTOs directamente
+            return lista; 
         }
-
 
         public class ResumenAuditoriaEncuestaDTO
         {

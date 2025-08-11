@@ -80,5 +80,6 @@ namespace front_auditoria.Pages
 
             return new JsonResult(new { success = true, data = datos });
         }
+
     }
 }
