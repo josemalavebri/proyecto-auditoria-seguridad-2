@@ -62,8 +62,6 @@ async function buscarEncuestas() {
     }
 }
 
-
-
 //--------------------------------------------------------INDEX--------------------------
 async function buscarAuditorias() {
     // Obtener valores de inputs y limpiar espacios
@@ -76,7 +74,6 @@ async function buscarAuditorias() {
         alert('Debe ingresar Departamento y Dirección para buscar.');
         return;
     }
-
 
     // Construir URL con query params
     const params = new URLSearchParams();
@@ -122,7 +119,6 @@ async function buscarAuditorias() {
         }
 
         console.log("Lista tiene elementos. Procediendo a renderizar la tabla."); // DEBUG
-
 
         // Crear tabla simple
         const table = document.createElement('table');

@@ -65,6 +65,7 @@
                 <!-- Preguntas -->
                 <div class="col-md-4 border-end pe-3" style="max-height: 90vh; overflow-y: auto;">
                     <h6 class="fw-bold mb-3">Preguntas e items de la encuesta anterior</h6>
+                        <button id="btnCargarEncuesta1" class="btn btn-secondary mb-3">Cargar Preguntas creadas</button>
                     <div class="accordion mb-4" id="accordionReferencia">
                        
                     </div>
@@ -239,13 +240,19 @@
     </div>
 </div>
 
-<button id="btnCargarEncuesta1" class="btn btn-primary mb-3">Cargar Encuesta 1</button>
 
 
 
 <script>
-        document.getElementById('btnCargarEncuesta1').addEventListener('click', async () => {
-      const idEncuesta = 1; // fijo para test
+       document.getElementById('btnCargarEncuesta1').addEventListener('click', async () => {
+    const primeraFila = document.querySelector('#tbody-auditorias tr');
+    if (!primeraFila) {
+        alert('No hay encuestas en la tabla');
+        return;
+    }
+
+    // El idEncuesta está en la primera celda de esa fila
+    const idEncuesta = primeraFila.cells[0].textContent.trim();
 
       try {
         const response = await fetch(`?handler=PreguntasItems&idEncuesta=${idEncuesta}`);
