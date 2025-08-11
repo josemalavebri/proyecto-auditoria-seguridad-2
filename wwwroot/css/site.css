@@ -29,3 +29,123 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+
+/* Contenedor general */
+.container.py-3 {
+    background-color: #f8fafc; /* azul muy claro, casi blanco */
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #1c2833; /* azul oscuro */
+}
+
+/* Títulos principales */
+h4.card-title.text-center {
+    color: #0b3d91; /* azul Universidad Guayaquil */
+    font-weight: 700;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Cards */
+.card.shadow.border-1 {
+    border-color: #0b3d91; /* borde azul */
+    border-width: 1.5px;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 3px 10px rgba(11, 61, 145, 0.15);
+    transition: box-shadow 0.3s ease;
+}
+
+    .card.shadow.border-1:hover {
+        box-shadow: 0 6px 20px rgba(11, 61, 145, 0.3);
+    }
+
+/* Labels */
+label.form-label.fw-semibold {
+    color: #0b3d91;
+    font-weight: 600;
+}
+
+/* Inputs */
+input.form-control {
+    border: 1.5px solid #0b3d91;
+    border-radius: 6px;
+    padding: 0.45rem 0.75rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+    input.form-control:focus {
+        border-color: #054a8b;
+        box-shadow: 0 0 5px rgba(11, 61, 145, 0.4);
+        outline: none;
+    }
+
+/* Botón principal */
+button.btn.btn-primary.fw-semibold {
+    background-color: #0b3d91;
+    border-color: #0b3d91;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    button.btn.btn-primary.fw-semibold:hover,
+    button.btn.btn-primary.fw-semibold:focus {
+        background-color: #054a8b;
+        border-color: #054a8b;
+        box-shadow: 0 0 10px rgba(5, 74, 139, 0.6);
+        outline: none;
+    }
+
+/* Contenedores internos para resultados */
+.container > h3 {
+    color: #0b3d91;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #0b3d91;
+    padding-bottom: 0.25rem;
+}
+
+/* Cajas de resultados */
+#contenedor-auditorias,
+#contenedor-detalle {
+    background-color: #e9f0fb; /* azul muy suave */
+    border: 1px solid #0b3d91;
+    border-radius: 8px;
+    min-height: 120px;
+    color: #123a6e;
+    font-size: 0.95rem;
+}
+
+/* Listados de sugerencias (dropdowns) */
+.list-group.position-absolute.w-100.z-3 {
+    border: 1.5px solid #0b3d91;
+    border-radius: 6px;
+    background-color: white;
+    max-height: 160px;
+    overflow-y: auto;
+    box-shadow: 0 2px 8px rgba(11, 61, 145, 0.15);
+    z-index: 1050;
+}
+
+    /* Scroll personalizado para sugerencias */
+    .list-group.position-absolute.w-100.z-3::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .list-group.position-absolute.w-100.z-3::-webkit-scrollbar-thumb {
+        background-color: #0b3d91;
+        border-radius: 3px;
+    }
+
+/* Responsive (pequeño ajuste para inputs en pantallas chicas) */
+@media (max-width: 575.98px) {
+    .col-md-4 {
+        margin-bottom: 1rem;
+    }
+}

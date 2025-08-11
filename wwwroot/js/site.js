@@ -1,4 +1,67 @@
 ﻿
+//------------------------------------------------------CREADOR DE ENCUESTAS--------------------------
+
+async function buscarEncuestas() {
+    // Mostrar la sección que estaba oculta
+    document.getElementById('seccionAuditoria').classList.remove('d-none');
+
+    // Obtener valores de inputs (los filtros que tienes definidos)
+    const nombreDireccion = document.getElementById('lugares').value.trim();
+    const nombreFacultad = document.getElementById('facultad').value.trim();
+    const nombreDepartamento = document.getElementById('departamento').value.trim();
+
+    if (!nombreDepartamento || !nombreDireccion) {
+        alert('Debe ingresar Departamento y Dirección para buscar.');
+        return;
+    }
+
+    // Construir parámetros para la query string
+    const params = new URLSearchParams();
+    params.append('nombreDepartamento', nombreDepartamento);
+    params.append('nombreDireccion', nombreDireccion);
+    if (nombreFacultad) params.append('nombreFacultad', nombreFacultad);
+
+    const url = `/Index?handler=BuscarEncuestas&${params.toString()}`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Error en la consulta');
+        const datos = await response.json();
+
+        // Mostrar tabla y renderizar filas
+        const tabla = document.getElementById('tabla-auditorias');
+        const tbody = document.getElementById('tbody-auditorias');
+
+        tabla.style.display = 'table';  // Mostrar tabla
+        tbody.innerHTML = '';            // Limpiar tabla previa
+
+        if (!datos || datos.length === 0) {
+            document.getElementById('mensaje-auditorias').textContent = 'No se encontraron encuestas.';
+            tabla.style.display = 'none';  // Ocultar tabla si no hay datos
+            return;
+        }
+
+        document.getElementById('mensaje-auditorias').textContent = '';
+
+        // Asumo que datos es un array o un objeto (adaptar según backend)
+        const lista = Array.isArray(datos) ? datos : [datos];
+
+        lista.forEach(encuesta => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${encuesta.idEncuesta}</td>
+                <td>${new Date(encuesta.fechaEjecucion).toLocaleDateString()}</td>
+                <td>${encuesta.descripcion}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+    } catch (error) {
+        console.error(error);
+        document.getElementById('mensaje-auditorias').textContent = 'Error al cargar encuestas.';
+    }
+}
+
 
 
 //--------------------------------------------------------INDEX--------------------------
@@ -13,6 +76,7 @@ async function buscarAuditorias() {
         alert('Debe ingresar Departamento y Dirección para buscar.');
         return;
     }
+
 
     // Construir URL con query params
     const params = new URLSearchParams();
@@ -75,6 +139,7 @@ async function buscarAuditorias() {
             <th>Descripción Encuesta</th>
             <th>Cantidad Preguntas</th>
             <th>Cantidad Ítems</th>
+            <th>Detalle Encuesta</th>
           </tr>
         </thead>
       `;
@@ -93,7 +158,12 @@ async function buscarAuditorias() {
           <td>${dato.descripcionEncuesta || ''}</td>
           <td>${dato.cantidadPreguntas}</td>
           <td>${dato.cantidadItems}</td>
-        `;
+        <td>
+            <button class="btn btn-succes btn-detalle" data-id="${dato.idEncuesta}">
+              Detalle Encuesta
+            </button>
+        </td>
+          `;
 
             tbody.appendChild(tr);
         });
@@ -101,6 +171,75 @@ async function buscarAuditorias() {
         table.appendChild(tbody);
         contenedor.appendChild(table);
     }
+
+
+// SECCION - INDEX -------------------------------DETALLE DE LA ENCUESTA
+
+document.addEventListener('click', async function (e) {
+    if (e.target && e.target.classList.contains('btn-detalle')) {
+        const idEncuesta = e.target.getAttribute('data-id');
+        if (!idEncuesta) return;
+
+        try {
+            const response = await fetch(`/Index?handler=DetalleEncuesta&idEncuesta=${idEncuesta}`);
+            if (!response.ok) throw new Error('Error al cargar detalle de encuesta');
+
+            const detalle = await response.json();
+            console.log(detalle); // DEBUG: Verificar estructura de detalle
+            renderizarDetalleEncuesta(detalle);
+        } catch (error) {
+            console.error(error);
+            alert('No se pudo cargar el detalle de la encuesta');
+        }
+    }
+});
+
+function renderizarDetalleEncuesta(datos) {
+    const contenedor = document.getElementById('contenedor-detalle');
+    contenedor.innerHTML = '';  // Limpiar contenido previo
+
+    if (!datos || datos.length === 0) {
+        contenedor.innerHTML = '<p>No se encontraron detalles para esta encuesta.</p>';
+        return;
+    }
+
+    const table = document.createElement('table');
+    table.classList.add('table', 'table-sm', 'table-bordered');
+
+    table.innerHTML = `
+    <thead class="table-secondary">
+      <tr>
+        <th>Pregunta</th>
+        <th>Título</th>
+        <th>Código</th>
+        <th>Descripción</th>
+        <th>% Cumplimiento</th>
+        <th>Comentario</th>
+      </tr>
+    </thead>
+  `;
+
+    const tbody = document.createElement('tbody');
+
+    datos.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+      <td>${item.pregunta}</td>
+      <td>${item.titulo}</td>
+      <td>${item.codigo}</td>
+      <td>${item.descripcion}</td>
+      <td>${item.porcentajeCumplimiento ?? ''}</td>
+      <td>${item.comentario ?? ''}</td>
+    `;
+        tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+    contenedor.appendChild(table);
+}
+
+
+//SECCION - INDEX --------------------------------FIN DETALLE DE LA ENCUESTA--------------------------------
 
 //---------------------------------------
 

@@ -3,6 +3,7 @@ using front_auditoria.Respository.Lugares;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using proyecto_auditoria_seguridad.Repository.EncuestaEjecucion;
+using static front_auditoria.Respository.Encuesta.RepositoryEncuestaEjecucion;
 
 namespace proyecto_auditoria_seguridad.Pages
 {
@@ -81,6 +82,35 @@ namespace proyecto_auditoria_seguridad.Pages
                 nombreDepartamento, nombreDireccion, nombreFacultad);
 
             return new JsonResult(resumen);
+        }
+
+
+        public async Task<IActionResult> OnGetDetalleEncuestaAsync(int idEncuesta)
+        {
+            var repo = _serviceProvider.GetRequiredService<IDetalleEncuestaRepository>();
+
+            var detalle = await repo.ObtenerPreguntasPorEncuestaAsync(idEncuesta);
+
+            return new JsonResult(detalle);
+        }
+
+        public async Task<IActionResult> OnGetBuscarEncuestasAsync(string nombreDepartamento, string nombreDireccion, string nombreFacultad)
+        {
+            if (string.IsNullOrEmpty(nombreDepartamento) || string.IsNullOrEmpty(nombreDireccion))
+            {
+                return BadRequest("Faltan parámetros requeridos.");
+            }
+
+            // Obtener el repositorio dentro del método usando _serviceProvider
+            var repo = _serviceProvider.GetRequiredService<IRepositoryGet>();
+
+            // Llamar al método del repositorio
+            var resultado = await repo.GetUltimaEjecucionFiltradaAsync(nombreDepartamento, nombreDireccion, nombreFacultad);
+
+            if (resultado == null)
+                return new JsonResult(new List<EncuestaEjecucion>()); // lista vacía
+
+            return new JsonResult(new[] { resultado });
         }
 
 
